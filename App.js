@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import * as Location from "expo-location"
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -10,6 +11,12 @@ export default function App() {
   const [city, setCity] = useState("Loading...");
   const [days, setDays] = useState([]);
   const [ok, setOk] = useState(true);
+  const icons = {
+    Sunny: "sun",
+    Clouds: 'cloudy',
+    Rain: 'rain'
+  }
+  console.log(icons["clouds"])
   const getWeather = async () => {
     const { granted } = await Location.requestForegroundPermissionsAsync();
     if (!granted) setOk(false);
@@ -26,11 +33,11 @@ export default function App() {
   }
   useEffect(() => {
     const ExWeather = [
-      {temp: 27, weather: 'sunny'},
-      {temp: 25, weather: 'rain'},
-      {temp: 28, weather: 'sunny'},
-      {temp: 26, weather: 'clouds'},
-      {temp: 27, weather: 'sunny'}
+      {temp: 27.3, weather: 'Sunny'},
+      {temp: 25.8, weather: 'Rain'},
+      {temp: 28.1, weather: 'Sunny'},
+      {temp: 26.4, weather: 'Clouds'},
+      {temp: 27.3, weather: 'Sunny'}
     ]
     getWeather();
     setDays(ExWeather)
@@ -56,10 +63,14 @@ export default function App() {
           )
           :
           (
-            days.map((day, index) => 
+            days.map((day, index) =>
               <View key={index} style={styles.day}>
-                <Text style={styles.temp}>{day.temp}</Text>
+                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:'100%', }}>
+                  <Text style={styles.temp}>{day.temp}</Text>
+                  <Fontisto name={icons[day.weather]} size={100} color="white" />
+                </View>
                 <Text style={styles.description}>{day.weather}</Text>
+                <Text style={styles.tinyText}>overcast{day.weather}</Text>
               </View>
             )
           )
@@ -76,24 +87,36 @@ const styles = StyleSheet.create({
   city: {
     flex: 1.2,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   cityName: {
     fontSize: 60,
-    fontWeight: '500'
+    fontWeight: '500',
+    color: 'white'
   },
   weather: {
   },
   day: {
-    // flex: 1,
     width: SCREEN_WIDTH,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    color: 'white',
+    paddingHorizontal: 40
   },
   temp: {
     marginTop: 50,
     fontSize: 178,
+    color: 'white'
   },
   description: {
-    fontSize: 60,
-  }
+    marginTop: -10,
+    fontSize: 30,
+    color: "white",
+    fontWeight: "500",
+  },
+  tinyText: {
+    marginTop: -5,
+    fontSize: 25,
+    color: "white",
+    fontWeight: "500",
+  },
 })
